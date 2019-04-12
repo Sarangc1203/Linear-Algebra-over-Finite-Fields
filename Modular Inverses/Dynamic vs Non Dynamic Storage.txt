@@ -1,0 +1,42 @@
+There is not much difference seen in the time taken.
+Here is the output for different n's when m=31 (Time in microseconds)
+
+1. n=1000
+Time: 129
+Time(Dynamic): 125
+
+Time: 126
+Time(Dynamic): 125
+
+Time: 126
+Time(Dynamic): 126
+
+2. n=10000
+Time: 2190
+Time(Dynamic): 2242
+
+Time: 1256
+Time(Dynamic): 1250
+
+Time: 2296
+Time(Dynamic): 2206
+
+3. n=100000
+Time: 17877
+Time(Dynamic): 12476
+
+Time: 12986
+Time(Dynamic): 12894
+
+Time: 13609
+Time(Dynamic): 12611
+
+4. n=1000000
+Time: 125530
+Time(Dynamic): 126349
+
+Time: 124273
+Time(Dynamic): 125928
+
+Time: 130197
+Time(Dynamic): 127676
