@@ -1,0 +1,78 @@
+#include <iostream>
+#include <chrono>
+#include <cmath>
+#include<time.h>
+#include <cstring> 
+using namespace std;
+using namespace std::chrono;
+
+int main() 
+{ 
+	int n,m;
+	cin>>n>>m;
+	int matrix[n][n];
+	int b[n];
+	int i,j,k;
+  // Create a symmetric matrix
+	for (i=0;i<n;i++){
+		b[i]=rand()%m;
+	    for (j=i;j<n;j++){
+	        matrix[i][j]=rand()%m;
+	        matrix[j][i]=matrix[i][j];
+	    }
+	}
+	auto start = high_resolution_clock::now();
+	int lower[n][n];
+	memset(lower, 0, sizeof(lower));
+  // Convert to lower echleon form
+    for (i = 0; i < n; i++) { 
+		for (j = 0; j <= i; j++) { 
+			int sum = 0; 
+      //Using general term formula
+			if (j == i)
+			{
+				for (k = 0; k < j; k++) 
+					sum += pow(lower[j][k], 2); 
+				lower[j][j] = sqrt((matrix[j][j] - 
+										sum)); 
+			} else { 
+
+				for (k = 0; k < j; k++) 
+					sum += (lower[i][k] * lower[j][k]); 
+				lower[i][j] = (matrix[i][j] - sum)/lower[j][j]; 
+			} 
+		} 
+	}
+	//transpose of the matrix
+	int lowert[n][n];
+	for (i=0;i<n;i++){
+		for (j=0;j<n;j++){
+			lowert[i][j]=lower[j][i];
+		}
+	}
+	//solve Ly=b
+	int y[n];
+	y[0]=b[0]/lower[0][0];
+	for (i=1;i<n;i++){
+		y[i]=b[i];
+		for (j=0;j<i;j++){
+			y[i]=y[i]-b[j]*lower[i][j];
+		}
+		y[i]=y[i]/lower[i][i];
+	}
+	//solve Lt.x=y
+	int x[n];
+	x[n-1]=y[n-1]/lowert[n-1][n-1];
+	for (i=n-2;i>=0;i--){
+		x[i]=y[i];
+		for (j=i+1;j<n;j++){
+			x[i]=x[i]-y[j]*lowert[i][j];
+		}
+		x[i]=x[i]/lowert[i][i];
+	}
+	
+    auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start);
+
+	cout << "Time: "<<duration.count()<<endl;
+} 
