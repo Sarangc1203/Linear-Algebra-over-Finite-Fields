@@ -7,8 +7,8 @@ using namespace std::chrono;
 
 //to square a matrix A
 
-int square(vector<vector<int>> A, int m, int n){
-vector<vector<int> square;
+vector<vector<int>> square(vector<vector<int>> A, int m, int n){
+vector<vector<int>> sqr;
 int i,j,k;
 for (i=0;i<n;i++){
 	vector<int> temp;
@@ -19,9 +19,9 @@ for (i=0;i<n;i++){
 			temp[j]=temp[j]%m;
 			}
 		}
-	square.push_back(temp);
+	sqr.push_back(temp);
 	}
-	return square;
+	return sqr;
 }
 
 int power(int x,int n,int m){
@@ -54,7 +54,7 @@ for (i=0;i<n;i++){
 
 // to get A.v
 
-int multiply2(vector<vector<int>> A,vector<int>v,int m){
+vector<int> multiply2(vector<vector<int>> A,vector<int>v,int m){
 vector<int> result;
 int i,j;
 int n=v.size();
@@ -82,7 +82,7 @@ for (i=0;i<n;i++){
 
 // to get the ith row of a 2d vector
 
-int getRow(vector<vector<int>> V,int i){
+vector<int> getRow(vector<vector<int>> V,int i,int n){
 vector<int> temp;
 int j;
 for (j=0;j<n;j++){
@@ -98,7 +98,9 @@ int main() {
 	for (i = 0; i < n; i++)
 	{
 		vector<int> temp;
-		for (j = 0; j <n; j++)
+		for (j=0;j<i;j++)
+		temp.push_back(A[j][i]);
+		for (j = i; j <n; j++)
 		{
 			int t;
 			t = rand() % m;
@@ -122,32 +124,32 @@ int main() {
 	int l;
 	for (i=1;;i++){
 		vector <int> temp;
-		vector <int> temp2= multiply2(A,getRow(V,i-1),m);
+		vector <int> temp2= multiply2(A,getRow(V,i-1,n),m);
 		int c1= multiply(temp2,sqrA,temp2,m)*modArthInv(multiply(temp2,A,temp2,m),m)%m;
 		if (i!=1);
-		int c2=multiply(temp2,A,temp2)*modArthInv(multiply(getRow(V,i-2),A,getRow(V,i-2)),m)%m;
+		int c2=multiply(temp2,A,temp2,m)*modArthInv(multiply(getRow(V,i-2,n),A,getRow(V,i-2,n),m),m)%m;
 		for (j=0;j<n;j++){
 			if (i!=1)
-			temp.push_back((temp2[j]-c1*getRow(V,i-1)[j]-c2*getRow(V,i-2)[j])%m);
+			temp.push_back((temp2[j]-c1*getRow(V,i-1,n)[j]-c2*getRow(V,i-2,n)[j])%m);
 			else
-			temp.push_back((temp2[j]-c1*getRow(V,i-1)[j])%m);}
+			temp.push_back((temp2[j]-c1*getRow(V,i-1,n)[j])%m);}
 		V.push_back(temp);
-		if (mutiply(temp,A,temp,m)==0)
-		break;
+		if (multiply(temp,A,temp,m)==0){
 		l=i;
+		break;
+		}
 	}
 	vector<int> x;
 	for (i=0;i<l;i++){
-		vector<int> temp= getRow(V,i);
-		int c=multiply3(temp,b,m)*modArthInv(multiply(temp,A,temp,m)%m;
+		vector<int> temp= getRow(V,i,n);
+		int c=multiply3(temp,b,m)*modArthInv(multiply(temp,A,temp,m),m)%m;
 		for (j=0;j<n;j++){
-			x.push_back(temp[j];
+			x.push_back(temp[j]);
 		}
 		}
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<microseconds>(stop - start);
 
-	cout << "Time: "<<duration.count()<<endl;
-	return 0;
+	cout << "Time:"; 
 }
