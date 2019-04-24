@@ -83,11 +83,7 @@ for (i=0;i<n;i++){
 // to get the ith row of a 2d vector
 
 vector<int> getRow(vector<vector<int>> V,int i,int n){
-vector<int> temp;
-int j;
-for (j=0;j<n;j++){
-temp.push_back(V[i][j]);}
-return temp;}
+return V[i];}
 
 int main() {
 	int n,m;
@@ -98,8 +94,9 @@ int main() {
 	for (i = 0; i < n; i++)
 	{
 		vector<int> temp;
+		if (i!=0){
 		for (j=0;j<i;j++)
-		temp.push_back(A[j][i]);
+		temp.push_back(A[j][i]);}
 		for (j = i; j <n; j++)
 		{
 			int t;
@@ -112,7 +109,9 @@ int main() {
 	}
 	vector<int> b;
 	for (i=0;i<n;i++){
-	b.push_back(rand()%m);}
+	b.push_back(rand()%m);
+	cout<<b[i]<<" ";}
+	cout<<endl;
 	
 	
 	auto start = high_resolution_clock::now();
@@ -126,30 +125,38 @@ int main() {
 		vector <int> temp;
 		vector <int> temp2= multiply2(A,getRow(V,i-1,n),m);
 		int c1= multiply(temp2,sqrA,temp2,m)*modArthInv(multiply(temp2,A,temp2,m),m)%m;
-		if (i!=1);
-		int c2=multiply(temp2,A,temp2,m)*modArthInv(multiply(getRow(V,i-2,n),A,getRow(V,i-2,n),m),m)%m;
+		int c2;
+		if (i!=1)
+		c2=multiply(temp2,A,temp2,m)*modArthInv(multiply(getRow(V,i-2,n),A,getRow(V,i-2,n),m),m)%m;
 		for (j=0;j<n;j++){
 			if (i!=1)
-			temp.push_back((temp2[j]-c1*getRow(V,i-1,n)[j]-c2*getRow(V,i-2,n)[j])%m);
+			temp.push_back((temp2[j]+m-c1*getRow(V,i-1,n)[j]%m+m-c2*getRow(V,i-2,n)[j]%m)%m);
 			else
-			temp.push_back((temp2[j]-c1*getRow(V,i-1,n)[j])%m);}
+			temp.push_back((temp2[j]+m-c1*getRow(V,i-1,n)[j]%m)%m);}
 		V.push_back(temp);
 		if (multiply(temp,A,temp,m)==0){
 		l=i;
+		cout<<l<<endl;
 		break;
 		}
 	}
 	vector<int> x;
+	for (i=0;i<n;i++){
+	    x.push_back(0);}
 	for (i=0;i<l;i++){
 		vector<int> temp= getRow(V,i,n);
-		int c=multiply3(temp,b,m)*modArthInv(multiply(temp,A,temp,m),m)%m;
+		int c=(multiply3(temp,b,m)*modArthInv(multiply(temp,A,temp,m),m))%m;
 		for (j=0;j<n;j++){
-			x.push_back(temp[j]);
+			x[j]=x[j]+(temp[j]*c);
+			x[j]=x[j]%m;
 		}
 		}
+	for (i=0;i<n;i++){
+	    cout<<x[i]<<" ";}
+	cout<<endl;
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<microseconds>(stop - start);
 
-	cout << "Time:"; 
+	cout << "Time:"<<duration.count()<<endl;
 }
