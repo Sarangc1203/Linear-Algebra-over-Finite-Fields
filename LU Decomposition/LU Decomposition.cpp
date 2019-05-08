@@ -22,7 +22,7 @@ int modArthInv(int a,int m){
 
 int main()
 {
-    int n = 10, m=11, t;
+    int n = 1000, m=3, t;
     int ttt = 100;
     int ns = 0;
 	//cin >> n >> m;
@@ -53,6 +53,14 @@ int main()
 		t1 = rand() % m;
 		B.push_back(t1);
 	}
+	/*cout<<"MAT:"<<endl;
+	for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+            cout<<mat[i][j]<<"\t";
+        cout<<endl;
+    }
+    cout<<endl<<endl;*/
 	auto start = high_resolution_clock::now();
 	for (i = 0; i < n; i++) {
 		if (mat[i][i] == 0) {
@@ -75,11 +83,11 @@ int main()
     {
         for(int j = i +1; j < n; j++)
         {
-            int p = (modArthInv(m, mat[i][i]) * mat[j][i]) % m;
+            int p = (modArthInv(mat[i][i], m) * mat[j][i]) % m;
             if(p<0)
                 p+=m;
             L[j][i] = p;
-            cout<<p<<"\t";
+            //cout<<p<<"\t";
             for(int k = 0; k < n; k++)
             {
                 mat[j][k] -= p * mat[i][k];
@@ -90,16 +98,80 @@ int main()
         }
     }
 	}
-	auto stop = high_resolution_clock::now();
-	cout<<"MAT:"<<endl;
+
+	/*cout<<"U:"<<endl;
 	for(int i = 0; i < n; i++)
     {
         for(int j = 0; j < n; j++)
             cout<<mat[i][j]<<"\t";
         cout<<endl;
     }
+    cout<<"L:"<<endl;
+	for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+            cout<<L[i][j]<<"\t";
+        cout<<endl;
+    }*/
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    start = high_resolution_clock::now();
 
-	auto duration = duration_cast<microseconds>(stop - start);
-	cout<<duration.count()<<endl;
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = i+1; j < n; j++)
+        {
+            B[j] -= L[j][i];
+            B[j] %= m;
+            if(B[j] < 0)
+                B[j] += m;
+            L[j][i] = 0;
+        }
+    }
+    for(int i = 0; i < n; i++)
+    {
+        int p = modArthInv(mat[i][i], m);
+        for(int j = i; j < n; j++)
+        {
+            mat[i][j] *= p;
+            mat[i][j] %= m;
+            if(mat[i][j] < 0)
+                mat[i][j] += m;
+        }
+        B[i] *= p;
+        B[i] %= m;
+        if(B[i] < 0)
+            B[i] += m;
+    }
+    for(int i = 0; i < n ; i++)
+    {
+        for(int j = 0 ; j < i; j++)
+        {
+            B[j] -= mat[j][i];
+            B[j] %= m;
+            if(B[j] < 0)
+                B[j] += m;
+            mat[j][i] = 0;
+        }
+    }
+
+
+    /*cout<<"U:"<<endl;
+	for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+            cout<<mat[i][j]<<"\t";
+        cout<<endl;
+    }
+    cout<<"L:"<<endl;
+	for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+            cout<<L[i][j]<<"\t";
+        cout<<endl;
+    }*/
+    stop = high_resolution_clock::now();
+	auto duration2 = duration_cast<microseconds>(stop - start);
+	cout<<duration.count()<<endl<<duration2.count();
     return 0;
 }
