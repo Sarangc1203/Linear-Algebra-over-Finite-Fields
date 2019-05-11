@@ -18,7 +18,7 @@ for (i=0;i<n;i++){
 	}
 	sqr.push_back(temp);
 }
-omp_set_num_threads(4);
+omp_set_num_threads(omp_get_num_procs());
 #pragma omp parallel for private(j,k)
 for (i=0;i<n;i++){
 	for (j=0;j<n;j++){
