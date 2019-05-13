@@ -39,6 +39,17 @@ int modArthInv(int a,int m){
     return power(a,m-2,m);
 }
 
+bool isNull(vector<int> v){
+    int flag=0;
+    int i,n=v.size();
+    for (i=0;i<n;i++){
+        if (v[i]!=0){
+            flag=1;
+            break;}
+            }
+    if (flag==0) return true; else return false;
+        }
+
 // to get v(t).A.w
 
 int multiply(vector<int> v,vector< vector<int> > A,vector<int> w,int m) {
@@ -85,11 +96,11 @@ vector<int> getRow(vector<vector<int>> V,int i,int n){
 return V[i];}
 
 int main() {
-	int n,m;
-	cin >> n >> m;
+	int n=100,m=101;
+	//cin >> n >> m;
 	vector< vector<int> > A;
 	srand(time(0));
-	int i, j, k;
+	int i, j, k,flag=0;
 	for (i = 0; i < n; i++)
 	{
 		vector<int> temp;
@@ -99,6 +110,7 @@ int main() {
 		for (j = i; j <n; j++)
 		{
 			int t;
+			//cin>>t;
 			t = rand() % m;
 			//cout << t << " ";
 			temp.push_back(t);
@@ -106,10 +118,20 @@ int main() {
 		//cout << "\n";
 		A.push_back(temp);
 	}
+	/*for (i=0;i<n;i++){
+	    for (j=0;j<n;j++){
+	        cout<<A[i][j]<<" ";}
+	        cout<<endl;
+	    }*/
 	vector<int> b;
 	for (i=0;i<n;i++){
-	b.push_back(rand()%m);
-	cout<<b[i]<<" ";}
+	int t;
+	t=rand()%m;
+	//cin>>t;
+	b.push_back(t);
+	//cout<<b[i]<<" ";}
+	}
+	
 	cout<<endl;
 	
 	auto start = high_resolution_clock::now();
@@ -126,6 +148,8 @@ int main() {
 	for (i=1;;i++){
 		vector <int> temp;
 		vector <int> temp2= multiply2(A,V[i-1],m);
+		//for (j=0;j<n;j++)
+		//cout<<temp2[j]<<" ";
 		vector <int> temp3= V[i-1];
 		int c1= multiply(temp3,sqrA,temp3,m)*modArthInv(multiply(temp3,A,temp3,m),m)%m;
 		int c2;
@@ -139,6 +163,8 @@ int main() {
 		}
 		V.push_back(temp);
 		if (multiply(temp,A,temp,m)==0){
+		if (isNull(temp)==false)
+		    flag=1;
 		l=i;
 		cout<<l<<endl;
 		break;
@@ -155,8 +181,13 @@ int main() {
 			x[j]=x[j]%m;
 		}
 		}
-	for (i=0;i<n;i++){
+	if (flag==1)
+	cout<<" Algorithm fails";
+	else{
+	for (i=0;i<n;i++)
 	    cout<<x[i]<<" ";}
+
+    
 	cout<<endl;
 
 	auto stop = high_resolution_clock::now();
