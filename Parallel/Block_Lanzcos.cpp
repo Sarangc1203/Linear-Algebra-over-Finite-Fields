@@ -1,8 +1,9 @@
 #include <iostream>
 #include <chrono>
 #include <vector>
-#include<time.h>
+#include <time.h>
 #include <omp.h>
+#include <fstream>
 using namespace std;
 using namespace std::chrono;
 
@@ -18,9 +19,10 @@ for (i=0;i<n;i++){
 	}
 	sqr.push_back(temp);
 }
-omp_set_num_threads(omp_get_num_procs());
-#pragma omp parallel for private(j,k)
+//omp_set_num_threads(omp_get_num_procs());
+//#pragma omp parallel for private(j,k)
 for (i=0;i<n;i++){
+	//cout<<omp_get_num_threads();
 	for (j=0;j<n;j++){
 		for (k=0;k<n;k++){
 			sqr[i][j]=sqr[i][j]+A[i][k]*A[k][j];
@@ -50,7 +52,20 @@ int modArthInv(int a,int m){
 
 int multiply(vector<int> v,vector< vector<int> > A,vector<int> w,int m) {
 int i,j;
-int sum=0,n=v.size();
+int sum=0,n=v.size(),finalsum=0;
+/*#pragma omp parallel private(sum,i,j) shared(finalsum)
+{
+	sum=0;
+#pragma omp for
+for (i=0;i<n;i++){
+	for (j=0;j<n;j++){
+	sum=sum+v[j]*A[j][i]*w[i];
+	sum=sum%m;}
+	}
+#pragma omp critical
+finalsum+=sum;
+}
+return finalsum;*/
 for (i=0;i<n;i++){
 	for (j=0;j<n;j++){
 	sum=sum+v[j]*A[j][i]*w[i];
@@ -65,8 +80,10 @@ vector<int> multiply2(vector<vector<int>> A,vector<int>v,int m){
 vector<int> result;
 int i,j;
 int n=v.size();
+for (i=0;i<n;i++)
+result.push_back(0);
+//#pragma omp parallel for private(j)
 for (i=0;i<n;i++){
-	result.push_back(0);
 	for (j=0;j<n;j++){
 	result[i]=result[i]+A[i][j]*v[j];
 	result[i]=result[i]%m;}
@@ -92,14 +109,17 @@ vector<int> getRow(vector<vector<int>> V,int i,int n){
 return V[i];}
 
 int main() {
+	ifstream fin;
 	int n,m;
-	cin >> n >> m;
+	//cin >> n >> m;
+	 n = 10; m = 11;
 	vector< vector<int> > A;
 	srand(time(0));
 	int i, j, k;
+	fin.open("MatA.txt");
 	for (i = 0; i < n; i++)
 	{
-		vector<int> temp;
+		/*vector<int> temp;
 		if (i!=0){
 		for (j=0;j<i;j++)
 		temp.push_back(A[j][i]);}
@@ -111,17 +131,33 @@ int main() {
 			temp.push_back(t);
 		}
 		//cout << "\n";
+		A.push_back(temp);*/
+		int t;
+		vector<int> temp;
+		for(j = 0; j < n; j++)
+		{
+			fin>>t;
+			//cout<<t<<"\t";
+			temp.push_back(t);
+		}
+		//cout<<"\n";
 		A.push_back(temp);
 	}
+	fin.close();
+	fin.open("MatB.txt");
+	//cout<<"B:"<<endl;
 	vector<int> b;
 	for (i=0;i<n;i++){
-	b.push_back(rand()%m);
+		int t;
+		fin>>t;
+		b.push_back(t);
+	//b.push_back(rand()%m);
 	//cout<<b[i]<<" ";
 	}
 	//cout<<endl;
-	
+
 	auto start = high_resolution_clock::now();
-	
+
 	vector<vector<int>> V;
 	V.push_back(b);
 	auto start2 = high_resolution_clock::now();
@@ -164,12 +200,11 @@ int main() {
 		}
 		}
 	for (i=0;i<n;i++){
-	   //cout<<x[i]<<" ";
+	   cout<<x[i]<<" ";
 	   }
 	//cout<<endl;
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<microseconds>(stop - start);
-
 	cout << "Time:"<<duration.count()<<endl;
 }
