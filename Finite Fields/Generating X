@@ -1,0 +1,35 @@
+q:=17;
+F:=V(q);
+d:=15;
+li:=Factors(d);
+s:=Size(li);
+R:=[];
+i:=0;
+for i in [1..s] do
+	Add(R,[1..(li[i]-1)/2]);
+od;
+x:=[];
+eps:=[-1,1];
+epsilon:=[];
+for i in [1..s] do
+	Add(epsilon,eps);
+od;
+epsilon:=Cartesian(epsilon);
+l:=Size(epsilon);
+for i in [1..l] do
+	temp1:=[1..(q-1)];
+	epsR:=[];
+	for j in [1..s] do
+		temp2:=[];
+		Add(epsR,(epsilon[i][j]*R[j]) mod li[j]);
+		Add(epsR[j],0);
+		for k in [1..(q-1)] do
+			if (k mod li[j]) in epsR[j] then
+				Add(temp2,k);
+			fi;
+		od;
+		temp1:=Intersection(temp1,temp2);
+	od;
+	Add(x,temp1);
+od;
+			
