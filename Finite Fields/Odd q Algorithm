@@ -1,4 +1,4 @@
-q=31;
+q:=31;
 F:=GF(q);
 g:=Z(q);
 dlist:=[];
@@ -18,6 +18,12 @@ for i in [1..(q-1)] do
 	fi;
 od;
 for d in dlist do
+	e:=Union(Factors((q-1)/d),[]);
+	e:=Product(e);
+	Ad:=[];
+	for n in [0..e-1] do
+		Add(Ad,g^(n*d));
+	od;
 	li:=Union(Factors(d),[]);
 	s:=Size(li);
 	R:=[];
