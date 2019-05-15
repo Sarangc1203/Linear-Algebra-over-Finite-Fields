@@ -1,6 +1,12 @@
 q:=31;
+
+# Field F:
 F:=GF(q);
+
+# Generator of Field:
 g:=Z(q);
+
+# All possible values of odd unitary d are stored in dlist:
 dlist:=[];
 i:=1;
 while (i<=(q-1)/2) do
@@ -11,50 +17,74 @@ while (i<=(q-1)/2) do
 	fi;
 	i:=i+2;
 od;
+
+# Generating the set P:
 P:=[];
 for i in [1..(q-1)] do
 	if (Gcd(i,(q-1))=1) then
 		Add(P,g^i);
 	fi;
 od;
+
 for d in dlist do
-	e:=Union(Factors((q-1)/d),[]);
-	e:=Product(e);
+	Print(d, "\n");
+
+	# Generating the set Ad:
 	Ad:=[];
+	e:=Product(Union(Factors((q-1)/d),[]));
 	for n in [0..e-1] do
 		Add(Ad,g^(n*d));
 	od;
-	li:=Union(Factors(d),[]);
-	s:=Size(li);
+
+	# All the factors of d are stored in dfacts: (Union is used to remove redundunt factors)
+	dfacts:=Union(Factors(d),[]);
+	s:=Size(dfacts);
+
+	# R is the Rp set storing first half Field elements except 0:
 	R:=[];
 	i:=0;
 	for i in [1..s] do
-		Add(R,[1..(li[i]-1)/2]);
+		Add(R,[1..(dfacts[i]-1)/2]);
 	od;
-	x:=[];
-	eps:=[-1,1];
+
+	# Generating the values of all possible epsilons and storing it in epsilon:
 	epsilon:=[];
+	eps:=[-1,1];
 	for i in [1..s] do
 		Add(epsilon,eps);
 	od;
 	epsilon:=Cartesian(epsilon);
-	l:=Size(epsilon);
-	for i in [1..l] do
-		temp1:=List(Elements(F));
+
+	# x will store the Xd(epsilon) for all possible epsilons:
+	x:=[];
+
+	# Loop for calculating all Xd(epsilon)
+	for i in [1..Size(epsilon)] do
+		xtemp:=List(Elements(F));
+
+		# epsR is the set epsilon*Rp:
 		epsR:=[];
+
+		# Loop for checking x for all dfacts:
 		for j in [1..s] do
 			temp2:=[];
-			Add(epsR,(epsilon[i][j]*R[j]) mod li[j]);
+			Add(epsR,(epsilon[i][j]*R[j]) mod dfacts[j]);
 			Add(epsR[j],0);
+
+			# Loop for checking which element of field satisfies the condition:
 			for k in [1..(q-1)] do
-				if (k mod li[j]) in epsR[j] then
+				if (k mod dfacts[j]) in epsR[j] then
 					Add(temp2,(g^k));
 				fi;
 			od;
-			temp1:=Intersection(temp1,temp2);
+
+			# Intersection as it should lie in all epsilon*Rp for dfacts:
+			xtemp:=Intersection(xtemp,temp2);
 		od;
-		Add(x,temp1);
+		Add(x,xtemp);
 	od;
+
+	# Checking if the Union is equal to GF(q) - {0}:
 	y:=Union(x);
 	Add(y,0*g);
 	if IsEqualSet(y,Elements(F)) then
@@ -62,8 +92,14 @@ for d in dlist do
 	else
 		Print("Union False\n");
 	fi;
+
+	# A is used to store the values for first condition in Lemma 5:
 	A:=[];
+
+	# B is used to store the values for second condition in Lemma 5:
 	B:=[];
+
+	# Loops for finding elements of A forall alpha, beta, xd (:= Xd(delta)), xe (:= Xd(epsilon)):
 	for alpha in Ad do
 		for beta in Ad do
 			for xd in x do
@@ -84,6 +120,8 @@ for d in dlist do
 			od;
 		od;
 	od;
+
+	# Checking if A equal to GF(q) - {0}:
 	A:=Union(A,[]);
 	Add(A,0*g);
 	if IsEqualSet(A,Elements(F)) then
@@ -91,11 +129,13 @@ for d in dlist do
 	else
 		Print("First False\n");
 	fi;
+
+	# Checking if B equal to GF(q) - {0}:
 	B:=Union(B,[]);
 	Add(B,0*g);
 	if IsEqualSet(B,Elements(F)) then
-		Print("Second True\n");
+		Print("Second True\n\n");
 	else
-		Print("Second False\n");
+		Print("Second False\n\n");
 	fi;
 od;
