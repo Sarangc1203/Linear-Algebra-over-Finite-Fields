@@ -1,5 +1,5 @@
-q:=17;
-F:=V(q);
+q:=31;
+F:=GF(q);
 d:=15;
 li:=Factors(d);
 s:=Size(li);
@@ -17,7 +17,7 @@ od;
 epsilon:=Cartesian(epsilon);
 l:=Size(epsilon);
 for i in [1..l] do
-	temp1:=[1..(q-1)];
+	temp1:=List(Elements(F));
 	epsR:=[];
 	for j in [1..s] do
 		temp2:=[];
@@ -25,7 +25,7 @@ for i in [1..l] do
 		Add(epsR[j],0);
 		for k in [1..(q-1)] do
 			if (k mod li[j]) in epsR[j] then
-				Add(temp2,k);
+				Add(temp2,(Z(q)^k));
 			fi;
 		od;
 		temp1:=Intersection(temp1,temp2);
