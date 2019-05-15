@@ -1,4 +1,4 @@
-q:=31;
+q:=47;
 
 # Field F:
 F:=GF(q);
@@ -93,15 +93,15 @@ for d in dlist do
 		Print("Union False\n");
 	fi;
 
-	# A is used to store the values for first condition in Lemma 5:
-	A:=[];
-
-	# B is used to store the values for second condition in Lemma 5:
-	B:=[];
 
 	# Loops for finding elements of A forall alpha, beta, xd (:= Xd(delta)), xe (:= Xd(epsilon)):
 	for alpha in Ad do
 		for beta in Ad do
+			# A is used to store the values for first condition in Lemma 5:
+			A:=[];
+
+			# B is used to store the values for second condition in Lemma 5:
+			B:=[];
 			for xd in x do
 				yrange:=Intersection(P,xd);
 				for xe in x do
@@ -118,24 +118,24 @@ for d in dlist do
 					od;
 				od;
 			od;
+
+			# Checking if A equal to GF(q) - {0}:
+			A:=Union(A,[]);
+			Add(A,0*g);
+			if IsEqualSet(A,Elements(F)) then
+				Print("First True\n");
+			else
+				Print("First False\n");
+			fi;
+
+			# Checking if B equal to GF(q) - {0}:
+			B:=Union(B,[]);
+			Add(B,0*g);
+			if IsEqualSet(B,Elements(F)) then
+				Print("Second True\n\n");
+			else
+				Print("Second False\n\n");
+			fi;
 		od;
 	od;
-
-	# Checking if A equal to GF(q) - {0}:
-	A:=Union(A,[]);
-	Add(A,0*g);
-	if IsEqualSet(A,Elements(F)) then
-		Print("First True\n");
-	else
-		Print("First False\n");
-	fi;
-
-	# Checking if B equal to GF(q) - {0}:
-	B:=Union(B,[]);
-	Add(B,0*g);
-	if IsEqualSet(B,Elements(F)) then
-		Print("Second True\n\n");
-	else
-		Print("Second False\n\n");
-	fi;
 od;
