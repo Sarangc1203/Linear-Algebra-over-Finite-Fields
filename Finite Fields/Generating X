@@ -18,7 +18,7 @@ for i in [1..(q-1)] do
 	fi;
 od;
 for d in dlist do
-	li:=Factors(d);
+	li:=Union(Factors(d),[]);
 	s:=Size(li);
 	R:=[];
 	i:=0;
