@@ -58,8 +58,44 @@ for d in dlist do
 	y:=Union(x);
 	Add(y,0*g);
 	if IsEqualSet(y,Elements(F)) then
-		Print(true,"\n");
+		Print("Union True\n");
 	else
-		Print(false,"\n");
+		Print("Union False\n");
+	fi;
+	A:=[];
+	B:=[];
+	for alpha in Ad do
+		for beta in Ad do
+			for xd in x do
+				yrange:=Intersection(P,xd);
+				for xe in x do
+					xrange:=Intersection(P,xe);
+					for x1 in xrange do
+						for y1 in yrange do
+							Add(A, (alpha*x1+g^0)^2 - beta*y1);
+						od;
+					od;
+				od;
+				for x1 in P do
+					for y1 in yrange do
+						Add(B, x1^2 - beta*y1);
+					od;
+				od;
+			od;
+		od;
+	od;
+	A:=Union(A,[]);
+	Add(A,0*g);
+	if IsEqualSet(A,Elements(F)) then
+		Print("First True\n");
+	else
+		Print("First False\n");
+	fi;
+	B:=Union(B,[]);
+	Add(B,0*g);
+	if IsEqualSet(B,Elements(F)) then
+		Print("Second True\n");
+	else
+		Print("Second False\n");
 	fi;
 od;
