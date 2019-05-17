@@ -1,7 +1,9 @@
 b:=0;
-for p in [1003, 1005..10001] do
+q1:= [];
+R1:= [];
+for p in [3, 5..51] do
   if (IsPrimeInt(p) = true) then
-    K:=[1,2,3];
+    K:=[1,2..20];
     B:=[0];;
     for k in K do
       D:=DivisorsInt(p^k-1);
@@ -31,13 +33,9 @@ for p in [1003, 1005..10001] do
     R:=K;;
     SubtractSet(R, B);
     if Size(R) > 0 then
-      Print("\n\nFor ", p,":\t");
+      Print(p,"\n");
+      Add(q1,p);
+      Add(R1,R);
     fi;
-    for r in R do
-      b:=b+1;
-      Print(r);
-      Print(" ");
-    od;
   fi;
 od;
-Print("\nTotal Expected Exceptions are : ", b);
