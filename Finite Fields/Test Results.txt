@@ -31,6 +31,28 @@
 43^1    Exception
 43^2    Not Exception
 47^1    Not Exception
+53^1    Not Exception
+59^1    Not Exception
+59^2    Not Exception
+61^1    Exception
+61^2    Not Exception
+67^1    Not Exception
+67^2    Not Exception
+71^1    Not Exception
+71^2    Not Exception
+73^1    Exception
+79^1    Not Exception
+79^2    Not Exception
+83^2    Not Exception
+89^2    Not Exception
+97^1    Not Exception
+101^2   Not Exception
+103^1   Not Exception
+103^2   Not Exception
+109^1   Not Exception
+127^1   Not Exception
+131^1   Not Exception
+139^1   Not Exception
 151^1   Not Exception
 157^1   Not Exception
 181^1   Not Exception
