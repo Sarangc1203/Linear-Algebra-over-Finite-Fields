@@ -362,7 +362,53 @@ int main()
                 else
                     cout<<"";
             }
+			for (int alp=0;alp<Ad.size();alp++){
+				int alpha=Ad(alp);
+				for (int bet=0;bet<Ad.size();bet++){
+					int beta=Ad(beta);
+					set<int> A;
+					set<int> B;
+					for (int xdind=0;xdind<x.size();xdind++){
+						set<int> xd=x[xdind];
+						vector<int> yrange;
+						set_intersection(P.begin(),P.end(),xd.begin(),xd.end(),back_inserter(yrange));
+						for (int xeind=0;xeind<x.size();xeind++){
+							set<int> xe=x[xeind];
+							vector<int> xrange;
+							set_intersection(P.begin(),P.end(),xe.begin(),xe.end(),back_inserter(xrange));
+							for (int x1i=0;x1i<xrange.size();x1i++){
+								int x1=xrange[x1i];
+								for (int y1i=0;y1i<yrange.size();y1i++){
+									int y1=yrange[y1i];
+									A.insert(((alpha*x1+1)*(alpha*x1-1)-beta*y1)%p);
+								}
+							}
+						}
+						set<int>::iterator x1;
+						for (x1=P.begin();x1!=P.end();++x1){
+							for (y1i=0;y1i<yrange.size();y1i++){
+								int y1=yrange[y1i];
+								B.insert((x1*x1-beta*y1)%p);
+							}
+						}
+					}
+					if (A.size()!=(p-1))
+						flag=1;
+					if (B.size()!=(p-1))
+						flag=1;
+					if (flag==1)
+						break;
+				}
+				if (flag==1)
+					break;
+			}
+			if (flag==0)
+				break;
         }
+		if (flag==0)
+			cout<<q<<"^"<<n1<<"    Not Exception"<<endl;
+		else
+			cout<<q<<"^"<<n1<<"    Exception"<<endl;
     }
     return 0;
 }
