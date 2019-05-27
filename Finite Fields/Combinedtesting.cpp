@@ -195,10 +195,14 @@ int power(int x, unsigned int y, int p)
     return res;
 }
 
-vector<int> power(vector<int> a,int n,vector<int> poly,int q){
-	vector<int> temp=a;
-	for (int i=1;i<n;i++)
-		temp=Multiply(temp,a,poly,q);
+vector<int> power(vector<int> a,int n,vector<int> poly,int q,int n1){
+	vector<int> temp=toVec(1,q,n1);
+	while (n>0){
+		if (n%2==1)
+			temp=Multiply(temp,a,poly,q);
+		n=n/2;
+		a=Multiply(a,a,poly,q);
+	}
 	return temp;
 }
 
@@ -332,7 +336,7 @@ int main()
     vector<vector<int>> R1;
     //q1.push_back(3);
     //R1.push_back({2});
-    for (int p=3;p<=3;p=p+2){
+    for (int p=1621;p<=1621;p=p+2){
         if (isPrime(p,4)){
             vector<int> K={1,2,3,4,5};
             vector<int> B;
@@ -583,7 +587,7 @@ int main()
 			}
 			else
 			{
-				vector<int> poly={1,2,2};
+				vector<int> poly={1,38,6};
 				//cout<<"nq"<<endl;
 				//cout<<g<<endl;
 				int n = R1[index][n1];
@@ -613,7 +617,7 @@ int main()
 				{
 					if(gcd(i, p-1)== 1)
 					{
-						P.insert(toInt(power(toVec(g,q,n),i,poly,q),q));
+						P.insert(toInt(power(toVec(g,q,n),i,poly,q,n),q));
 					}
 				}
 				//cout<<"P"<<endl;
@@ -628,10 +632,10 @@ int main()
 					int e = 1;
 					for(int i = 0; i < e1.size(); i++)
 						e*=e1[i]%p;
-					
 					for(int n11 = 0; n11 < e; n11++)
-						Ad.push_back(toInt(power(toVec(g,q,n),n11*d,poly,q),q));
+						Ad.push_back(toInt(power(toVec(g,q,n),n11*d,poly,q,n),q));
 					sort(Ad.begin(), Ad.end());
+					//cout<<"Ad";
 					vector< long long> dfacts = PrimeDivisors(d);
 					int s = dfacts.size();
 					vector< vector<int> > R;
@@ -644,7 +648,6 @@ int main()
 						}
 						R.push_back(tempv);
 					}
-
 					vector< vector<int> > epsilon;
 					for(int i = 0; i < pow(2,s); i++)
 					{
@@ -658,13 +661,14 @@ int main()
 						}
 						epsilon.push_back(tempv);
 					}
-
+					//cout<<"eps"<<endl;
 					vector< set<int> > x;
 					set<int> y;
 					for(int i = 0; i < epsilon.size(); i++)
 					{
 						set<int> xtemp = F;
 						vector< set<int> > epsR;
+						//cout<<"xyz"<<endl;
 						for(int j = 0; j < s; j++)
 						{
 							set<int> temp2;
@@ -675,11 +679,14 @@ int main()
 							}
 							epsRtemps.insert(0);
 							epsR.push_back(epsRtemps);
+							//cout<<"start"<<endl;
+							vector<int> gen=toVec(g,q,n);
 							for(int k = 1; k < p; k++)
 							{
 								if(epsR[j].find(k % dfacts[j]) != epsR[j].end())
-									temp2.insert(toInt(power(toVec(g,q,n),k,poly,q),q));
+									temp2.insert(toInt(power(gen,k,poly,q,n),q));
 							}
+							//cout<<"end"<<endl;
 							set<int> xtemptemp;
 							set_intersection(xtemp.begin(), xtemp.end(), temp2.begin(), temp2.end(), inserter(xtemptemp, xtemptemp.begin()));
 							xtemp = xtemptemp;
@@ -707,6 +714,7 @@ int main()
 						cout<<"";
 					else
 						cout<<"";
+					cout<<"hhh"<<endl;
 					for (int alp=0;alp<Ad.size();alp++){
 						vector<int> alpha=toVec(Ad[alp],q,n);
 						for (int bet=0;bet<Ad.size();bet++){
