@@ -278,7 +278,7 @@ int generator(int n, int n1=1, vector<int> poly={1}){
     }
     else{
         int i;
-        int p=pow(n,n1);
+        int p=llround(pow(n,n1));
         for (i=2;i<p;i++){
             int j;
             vector<int> num=toVec(i,n,n1);
@@ -336,14 +336,17 @@ int main()
     vector<vector<int>> R1;
     //q1.push_back(3);
     //R1.push_back({2});
-    for (int p=1621;p<=1621;p=p+2){
+    for (int p=11;p<=11;p=p+2){
         if (isPrime(p,4)){
             vector<int> K={1,2,3,4,5};
             vector<int> B;
             int k;
-            for (k=0;k<K.size();k++){
-                vector<long long int> D=Divisors(pow(p,K[k])-1);
-                vector<long long int> P=PrimeDivisors(pow(p,K[k])-1);
+            for (k=1;k<2;k++){
+                vector<long long int> D=Divisors(llround(pow(p,K[k]))-1);
+                vector<long long int> P=PrimeDivisors(llround(pow(p,K[k]))-1);
+				for (int l=0;l<P.size();l++){
+					cout<<P[l]<<endl;
+				}
                 int counts=0;
                 for (int l=0;l<D.size();l++){
                     float d=1.0;
@@ -354,6 +357,7 @@ int main()
                             count++;
                         }
                     }
+					//cout<<d<<endl;
                     //cout<<d<<" "<<endl;
                     if (d>0){
                         float dlt=((2.0*count-1.0)/d)+2;
@@ -370,7 +374,7 @@ int main()
             }
             vector<int> R=Difference(K,B);
             //for (int k=0;k<B.size();k++)
-              //  cout<<B[k]<<" ";
+              //cout<<B[k]<<" ";
             //cout<<endl;
             if (R.size()>0){
                 q1.push_back(p);
@@ -401,6 +405,7 @@ int main()
     {
         //cout<<"index"<<endl;
         int q = q1[index];
+		//cout<<R1[index].size();
         for(int n1 = 0; n1 < R1[index].size(); n1++)
         {	
 			if (R1[index][n1]==1)
@@ -408,7 +413,7 @@ int main()
 				//cout<<"nq"<<endl;
 				int g = generator(q);
 				//cout<<g<<endl;
-				int p = pow(q,R1[index][n1]);
+				int p = llround(pow(q,R1[index][n1]));
 				//cout<<p<<endl;
 				set<int> F;
 				for(int i = 0; i < p; i++)
@@ -465,12 +470,12 @@ int main()
 					}
 
 					vector< vector<int> > epsilon;
-					for(int i = 0; i < pow(2,s); i++)
+					for(int i = 0; i < llround(pow(2,s)); i++)
 					{
 						vector<int> tempv;
 						for(int j = 0; j < s; j++)
 						{
-							if( ((i)%(int)pow(2,j+1)) - pow(2, j) < 0)
+							if( ((i)%llround(pow(2,j+1))) - llround(pow(2, j)) < 0)
 							   tempv.push_back(1);
 							else
 							   tempv.push_back(-1);
@@ -587,13 +592,16 @@ int main()
 			}
 			else
 			{
-				vector<int> poly={1,38,6};
+				vector<int> poly={1,7,2};
 				//cout<<"nq"<<endl;
 				//cout<<g<<endl;
 				int n = R1[index][n1];
-				
+				if (n==3)
+					poly={1,0,2,9};
+				if (n==4)
+					poly={1,0,8,10,2};
 				int g = generator(q,n,poly);
-				int p = pow(q,n);
+				int p = llround(pow(q,n));
 				//cout<<p<<endl;
 				set<int> F;
 				for(int i = 0; i < p; i++)
@@ -649,12 +657,12 @@ int main()
 						R.push_back(tempv);
 					}
 					vector< vector<int> > epsilon;
-					for(int i = 0; i < pow(2,s); i++)
+					for(int i = 0; i < llround(pow(2,s)); i++)
 					{
 						vector<int> tempv;
 						for(int j = 0; j < s; j++)
 						{
-							if( ((i)%(int)pow(2,j+1)) - pow(2, j) < 0)
+							if( ((i)%llround(pow(2,j+1))) - llround(pow(2, j)) < 0)
 							   tempv.push_back(1);
 							else
 							   tempv.push_back(-1);
@@ -714,7 +722,6 @@ int main()
 						cout<<"";
 					else
 						cout<<"";
-					cout<<"hhh"<<endl;
 					for (int alp=0;alp<Ad.size();alp++){
 						vector<int> alpha=toVec(Ad[alp],q,n);
 						for (int bet=0;bet<Ad.size();bet++){
