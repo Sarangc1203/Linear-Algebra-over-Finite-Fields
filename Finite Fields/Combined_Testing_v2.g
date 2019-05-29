@@ -69,11 +69,24 @@ for index in [1..Size(q1)] do
 			fi;
 		od;
 
+		dlist1:= Union(Factors(q-1),[]);
+
+		dlist2:= [];
+
+		q11:= q^n1-1;
+
+		for i in dlist1 do
+			while q11 mod i = 0 do
+				q11:=q11/i;
+			od;
+			Add(dlist2,q11);
+		od;
+
 		dlist:=Reversed(dlist);
 		flag:=0;
 
-		for d in dlist do
-
+		for d in dlist2 do
+			flag:=0;
 			# Generating the set Ad:
 			Ad:=[];
 			e:=Product(Union(Factors((q^n1-1)/d),[]));
@@ -149,17 +162,18 @@ for index in [1..Size(q1)] do
 						for xe in x do
 							flag2:=0;
 							# A is used to store the values for first condition in Lemma 5:
-							A:=Set([]);
+							A:=[];
 							xrange:=Intersection(P,xe);
 							for x1 in xrange do
 								for y1 in yrange do
-									AddSet(A, (alpha*x1+g^0)^2 - beta*y1);
+									Add(A, (alpha*x1+g^0)^2 - beta*y1);
 								od;
 							od;
 							# Checking if A equal to GF(q^n1) - {0}:
-							A:=Union(A,[]);
 							Add(A,0*g);
-							if IsEqualSet(A,Elements(F)) then
+							A:=Union(A,[]);
+							
+							if Length(A) = q^n1 then
 								flag2:=1;
 								break;
 								Print("");
@@ -169,16 +183,17 @@ for index in [1..Size(q1)] do
 						od;
 						flag3:=0;
 						# B is used to store the values for second condition in Lemma 5:
-						B:=Set([]);
+						B:=[];
 						for x1 in P do
 							for y1 in yrange do
-								AddSet(B, x1^2 - beta*y1);
+								Add(B, x1^2 - beta*y1);
 							od;
 						od;
 						# Checking if B equal to GF(q^n1) - {0}:
-						B:=Union(B,[]);
 						Add(B,0*g);
-						if IsEqualSet(B,Elements(F)) then
+						B:=Union(B,[]);
+						
+						if Length(B) = q^n1 then
 							flag3:=1;
 							Print("");
 						else
