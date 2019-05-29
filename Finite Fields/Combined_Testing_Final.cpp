@@ -177,9 +177,9 @@ vector<long long int> PrimeDivisors(long long int n){
     return v;
 }
 
-int power(int x, unsigned int y, int p)
+long long int power(long long int x, unsigned int y, int p)
 {
-    int res = 1;      // Initialize result
+    long long int res = 1;      // Initialize result
     x = x % p;  // Update x if it is more than or
                 // equal to p
     while (y > 0)
@@ -206,14 +206,14 @@ vector<int> power(vector<int> a,int n,vector<int> poly,int q,int n1){
 	return temp;
 }
 
-bool miillerTest(int d, int n)
+bool miillerTest(long long int d,long long int n)
 {
     // Pick a random number in [2..n-2]
     // Corner cases make sure that n > 4
-    int a = 2 + rand() % (n - 4);
+    long long int a = 2 + rand() % (n - 4);
 
     // Compute a^d % n
-    int x = power(a, d, n);
+    long long int x = power(a, d, n);
 
     if (x == 1  || x == n-1)
        return true;
@@ -243,7 +243,7 @@ bool isPrime(int n, int k)
     if (n <= 3) return true;
 
     // Find r such that n = 2^d * r + 1 for some r >= 1
-    int d = n - 1;
+    long long int d = n - 1;
     while (d % 2 == 0)
         d /= 2;
 
@@ -414,7 +414,7 @@ int main()
     vector<vector<int>> R1;
     //q1.push_back(3);
     //R1.push_back({2});
-    for (int p=3;p<=101;p=p+2){
+    for (int p=80001;p<=100001;p=p+2){
         if (isPrime(p,4)){
             vector<int> K={1,2,3,4,5};
             vector<int> B;
