@@ -72,6 +72,76 @@ vector<int> Remainder(vector<int> a, vector<int> b, int q)
     return c;
 }
 
+
+long long int power(long long int x, unsigned int y, int p)
+{
+    long long int res = 1;      // Initialize result
+    x = x % p;  // Update x if it is more than or
+                // equal to p
+    while (y > 0)
+    {
+        // If y is odd, multiply x with result
+        if (y & 1)
+            res = (res*x) % p;
+
+        // y must be even now
+        y = y>>1; // y = y/2
+        x = (x*x) % p;
+    }
+    return res;
+}
+
+bool miillerTest(long long int d,long long int n)
+{
+    // Pick a random number in [2..n-2]
+    // Corner cases make sure that n > 4
+    long long int a = 2 + rand() % (n - 4);
+
+    // Compute a^d % n
+    long long int x = power(a, d, n);
+
+    if (x == 1  || x == n-1)
+       return true;
+
+    // Keep squaring x while one of the following doesn't
+    // happen
+    // (i)   d does not reach n-1
+    // (ii)  (x^2) % n is not 1
+    // (iii) (x^2) % n is not n-1
+    while (d != n-1)
+    {
+        x = (x * x) % n;
+        d *= 2;
+
+        if (x == 1)      return false;
+        if (x == n-1)    return true;
+    }
+
+    // Return composite
+    return false;
+}
+
+bool isPrime(int n, int k)
+{
+    // Corner cases
+    if (n <= 1 || n == 4)  return false;
+    if (n <= 3) return true;
+
+    // Find r such that n = 2^d * r + 1 for some r >= 1
+    long long int d = n - 1;
+    while (d % 2 == 0)
+        d /= 2;
+
+    // Iterate given nber of 'k' times
+    for (int i = 0; i < k; i++)
+         if (!miillerTest(d, n))
+              return false;
+
+    return true;
+}
+
+
+
 bool isNull(vector<int> v){
     int flag=0;
     int i,n=v.size();
@@ -205,24 +275,6 @@ int generator(int n, vector<int> poly, int n1=1){
     }
 }
 
-long long int power(long long int x, unsigned int y, int p)
-{
-    long long int res = 1;      // Initialize result
-    x = x % p;  // Update x if it is more than or
-                // equal to p
-    while (y > 0)
-    {
-        // If y is odd, multiply x with result
-        if (y & 1)
-            res = (res*x) % p;
-
-        // y must be even now
-        y = y>>1; // y = y/2
-        x = (x*x) % p;
-    }
-    return res;
-}
-
 vector<int> power(vector<int> a,int n,vector<int> poly,int q,int n1){
     vector<int> temp=toVec(1,q,n1);
     while (n>0){
@@ -349,137 +401,160 @@ vector<int> MinPoly(int q, int n)
 
 
 int main(){
-    int n=4;
-    int q=3;
-    int p = llround(pow(q,n));
-    vector<int> P;
-    if(n == 1)
-    {
-        int g=generator(q,{1});
-        P.push_back(g);
-        for (int i=2;i<p-1;i++){
-            if (gcd(p-1,i)==1)
-                P.push_back(power(g,i,p));
-        }
-        sort(P.begin(),P.end());
-        int N=P.size();
+    for (int q=3;q<=1001;q=q+2){
+        if (isPrime(q,4)){
+            int n=1;
+            int p = llround(pow(q,n));
+            int flag=0;
+            vector<int> P;
+            if(n == 1)
+            {
+                int g=generator(q,{1});
+                P.push_back(g);
+                for (int i=2;i<p-1;i++){
+                    if (gcd(p-1,i)==1)
+                        P.push_back(power(g,i,p));
+                }
+                sort(P.begin(),P.end());
+                int N=P.size();
 
-        for (int i=1;i<p;i++){
-            for (int j=1;j<p;j++){
-                for (int k=1;k<p;k++){
-                    for (int l=1;l<p;l++){
-                        int red=0;
-                        vector<int> A={i,j,k,l};
-                        for (int m=0;m<p;m++){
-                            if (((i*m*m*m+j*m*m+k*m+l)%p)==0){
-                                red=1;
-                                break;
-                            }
-                        }
-                        //cout<<red<<endl;
-                        int count=0;
-                        int foundP=0;
-                        if (red==0){
-                            for (int m=0;m<N;m++){
-                                int a=P[m];
-                                count=count+1;
-                                if (foundP==0){
-                                    if (binary_search(P.begin(),P.end(),(i*a*a*a+j*a*a+k*a+l)%p)){
-                                        foundP=1;
-                                        //cout<<"jjj"<<endl;
-                                    }
-                                    else{
-                                        if (count==N)
-                                            cout<<"False"<<endl;
+                for (int i=1;i<p;i++){
+                    for (int j=1;j<p;j++){
+                        for (int k=1;k<p;k++){
+                            for (int l=1;l<p;l++){
+                                int red=0;
+                                vector<int> A={i,j,k,l};
+                                for (int m=0;m<p;m++){
+                                    if (((i*m*m*m+j*m*m+k*m+l)%p)==0){
+                                        red=1;
+                                        break;
                                     }
                                 }
+                                //cout<<red<<endl;
+                                int count=0;
+                                int foundP=0;
+                                if (red==0 && flag==0){
+                                    for (int m=0;m<N;m++){
+                                        int a=P[m];
+                                        count=count+1;
+                                        if (foundP==0){
+                                            if (binary_search(P.begin(),P.end(),(i*a*a*a+j*a*a+k*a+l)%p)){
+                                                foundP=1;
+                                                //cout<<"jjj"<<endl;
+                                            }
+                                            else{
+                                                if (count==N)
+                                                    flag=1;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (flag==1)
+                                    break;
                             }
+                            if (flag==1)
+                                break;
                         }
+                        if (flag==1)
+                            break;
                     }
+                    if (flag==1)
+                        break;
                 }
             }
-        }
-    }
-    else
-    {
-        vector<int> minpoly = MinPoly(q,n);
-        //cout<<toInt(power(toVec(3,q,n),17,minpoly,q,n),q);
-        int g=generator(q,minpoly,n);
-        //cout<<"gen:"<<g<<endl;
-        //cout<<toInt(Subtract(toVec(g,q,n),Multiply(toVec(4,q,n),toVec(g,q,n),minpoly,q),q),q)<<endl;
-        for(int i = 1; i < p; i++)
-        {
-            //cout<<toInt(power(toVec(g,q,n),i,minpoly,q,n),q)<<endl;
-        }
-        P.push_back(g);
-        for (int i=2;i<p-1;i++){
-            if (gcd(p-1,i)==1)
+            else
+            {
+                vector<int> minpoly = MinPoly(q,n);
+                //cout<<toInt(power(toVec(3,q,n),17,minpoly,q,n),q);
+                int g=generator(q,minpoly,n);
+                //cout<<"gen:"<<g<<endl;
+                //cout<<toInt(Subtract(toVec(g,q,n),Multiply(toVec(4,q,n),toVec(g,q,n),minpoly,q),q),q)<<endl;
+                for(int i = 1; i < p; i++)
                 {
-                    P.push_back(toInt(power(toVec(g,q,n),i,minpoly,q,n),q));
-                    //cout<<P[P.size()-1]<<endl;
+                    //cout<<toInt(power(toVec(g,q,n),i,minpoly,q,n),q)<<endl;
                 }
-        }
-        sort(P.begin(),P.end());
-        int N=P.size();
-    int counter = 0;
-        for (int i=1;i<p;i++){
-            for (int j=1;j<p;j++){
-                for (int k=1;k<p;k++){
-                    for (int l=1;l<p;l++){
-                        int red=0;
-                        vector<int> A={i,j,k};
-                        vector<int> i1,j1,k1,l1,fouri1;
-                        i1 = toVec(i,q,n);
-                        j1 = toVec(j,q,n);
-                        k1 = toVec(k,q,n);
-                        l1 = toVec(l,q,n);
-                        fouri1 = constMult(i1,4,q);
-                        for (int m=0;m<p;m++){
-                            vector<int> m1=toVec(m,q,n);
-                            vector<int> m2=power(m1,2,minpoly,q,n);
-                            vector<int> m3=power(m1,3,minpoly,q,n);
-                            if (toInt(Add(Multiply(i1,m3,minpoly,q),Add(Multiply(j1,m2,minpoly,q),Add(Multiply(k1,m1,minpoly,q),l1,q),q),q),q)==0)
-                            {
-                                red = 1;
-                                break;
-                            }
+                P.push_back(g);
+                for (int i=2;i<p-1;i++){
+                    if (gcd(p-1,i)==1)
+                        {
+                            P.push_back(toInt(power(toVec(g,q,n),i,minpoly,q,n),q));
+                            //cout<<P[P.size()-1]<<endl;
                         }
-                        //cout<<red<<endl;
-                        /*for (int m=0;m<p;m++){
-                            if (((i*m*m+j*m+k)%p)==0){
-                                red=1;
-                                break;
-                            }
-                        }*/
-                        //cout<<red<<endl;
-                        int count=0;
-                        int foundP=0;
-                        if (red==0){
-                            for (int m=0;m<N;m++){
-                                int a=P[m];
-                                count=count+1;
-                                if (foundP==0){
-                                    vector<int> a1 = toVec(a,q,n);
-                                    vector<int> a2 = power(a1,2,minpoly,q,n);
-                                    vector<int> a3 = power(a1,3,minpoly,q,n);
-                                    int res = toInt(Add(Multiply(i1,a3,minpoly,q),Add(Multiply(j1,a2,minpoly,q),Add(Multiply(k1,a1,minpoly,q),l1,q),q),q),q);
-                                    //cout<<res<<endl;
-                                    if (binary_search(P.begin(),P.end(),res)){
-                                        //cout<<"res: "<<res<<endl;
-                                        foundP=1;
-                                        //cout<<"jjj"<<endl;
-                                    }
-                                    else{
-                                        if (count==N)
-                                            cout<<"False"<<endl;
+                }
+                sort(P.begin(),P.end());
+                int N=P.size();
+                for (int i=1;i<p;i++){
+                    for (int j=1;j<p;j++){
+                        for (int k=1;k<p;k++){
+                            for (int l=1;l<p;l++){
+                                int red=0;
+                                vector<int> A={i,j,k};
+                                vector<int> i1,j1,k1,l1,fouri1;
+                                i1 = toVec(i,q,n);
+                                j1 = toVec(j,q,n);
+                                k1 = toVec(k,q,n);
+                                l1 = toVec(l,q,n);
+                                fouri1 = constMult(i1,4,q);
+                                for (int m=0;m<p;m++){
+                                    vector<int> m1=toVec(m,q,n);
+                                    vector<int> m2=power(m1,2,minpoly,q,n);
+                                    vector<int> m3=power(m1,3,minpoly,q,n);
+                                    if (toInt(Add(Multiply(i1,m3,minpoly,q),Add(Multiply(j1,m2,minpoly,q),Add(Multiply(k1,m1,minpoly,q),l1,q),q),q),q)==0)
+                                    {
+                                        red = 1;
+                                        break;
                                     }
                                 }
+                                //cout<<red<<endl;
+                                /*for (int m=0;m<p;m++){
+                                    if (((i*m*m+j*m+k)%p)==0){
+                                        red=1;
+                                        break;
+                                    }
+                                }*/
+                                //cout<<red<<endl;
+                                int count=0;
+                                int foundP=0;
+                                if (red==0){
+                                    for (int m=0;m<N;m++){
+                                        int a=P[m];
+                                        count=count+1;
+                                        if (foundP==0 && flag==0){
+                                            vector<int> a1 = toVec(a,q,n);
+                                            vector<int> a2 = power(a1,2,minpoly,q,n);
+                                            vector<int> a3 = power(a1,3,minpoly,q,n);
+                                            int res = toInt(Add(Multiply(i1,a3,minpoly,q),Add(Multiply(j1,a2,minpoly,q),Add(Multiply(k1,a1,minpoly,q),l1,q),q),q),q);
+                                            //cout<<res<<endl;
+                                            if (binary_search(P.begin(),P.end(),res)){
+                                                //cout<<"res: "<<res<<endl;
+                                                foundP=1;
+                                                //cout<<"jjj"<<endl;
+                                            }
+                                            else{
+                                                if (count==N)
+                                                    flag=1;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (flag==1)
+                                    break;
                             }
+                            if (flag==1)
+                                break;
                         }
+                        if (flag==1)
+                            break;
                     }
+                    if (flag==1)
+                        break;
                 }
             }
+            if (flag==0)
+            cout<<q<<"^"<<n<<"\t\t"<<"Not Exception"<<endl;
+            else
+            cout<<q<<"^"<<n<<"\t\t"<<"Exception"<<endl;
+           //cout<<"counter: "<<counter<<endl;
         }
-        //cout<<"counter: "<<counter<<endl;
     }
 }
